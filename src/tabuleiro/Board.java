@@ -6,45 +6,52 @@ public class Board {
     private final String[][] standardBoard = new String[9][9];
     private String[][] board;
 
-    // Inicializa o jogo atribuindo o tabuleiro padrão à variável de jogo e o preenche com valores
+    /**
+     * Inicializa o jogo atribuindo o tabuleiro padrão à variável de jogo
+     * e preenche o tabuleiro com valores aleatórios.
+     */
     public void startingGame(){
         board = standardBoard;
         popularBoard();
     }
 
-    /*
-    *Função usada para "popular" o tabuleiro, preenchendo cada linha com 4 valores distintos
-    * */
+    /**
+     * Popula o tabuleiro preenchendo cada linha com 4 valores numéricos distintos.
+     * Garante que os valores não se repitam na mesma linha (horizontal) nem na mesma coluna (vertical),
+     * utilizando validadores externos.
+     */
     private void popularBoard() {
         Random numericalGenerator = new Random();
         for (String[] strings : board) {
-
             Arrays.fill(strings, "     ");
-            int count = 0;
 
+        }
+        for (String[] strings : board) {
+            int count = 0;
+            int row = 0;
             while (count < 4) {
                 int randomFilling = numericalGenerator.nextInt(9);
                 String randomValue = String.valueOf(numericalGenerator.nextInt(10));
 
-                boolean horizontalValidator = true;
+                boolean validHorizontal = Validator.horizontalValidator(strings, randomValue);
+                boolean validVertical = Validator.verticalValidator(board, randomFilling, randomValue);
+                boolean validBlock = Validator.blockValidator(standardBoard, randomFilling, row, randomValue);
 
-                for (String string : strings) {
-                    if (string.contains(randomValue)) {
-                        horizontalValidator = false;
-                        break;
-                    }
-                }
-                if (strings[randomFilling].isBlank() && horizontalValidator) {
+                if (strings[randomFilling].isBlank() && validHorizontal && validVertical) {
                     strings[randomFilling] = "  " + randomValue + "  ";
                     count++;
                 }
 
             }
-
+            row++;
         }
+
     }
 
-    // Imprime o tabuleiro no console com divisões visuais entre os blocos 3x3
+    /**
+     * Imprime o tabuleiro no console, com divisões visuais entre os blocos 3x3
+     * para facilitar a leitura da estrutura do jogo.
+     */
     public void printBoard() {
         for (int l = 0; l < 9; l++) {
 
@@ -56,9 +63,7 @@ public class Board {
                 }
             }
             switch (l) {
-                case 2, 5 -> {
-                    System.out.println("\n======================================================");
-                }
+                case 2, 5 -> System.out.println("\n======================================================");
             }
         }
     }
