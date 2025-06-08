@@ -1,4 +1,6 @@
 package tabuleiro;
+import teste.ValidatorTeste;
+
 import java.util.Arrays;
 import java.util.Random;
 
@@ -22,22 +24,20 @@ public class Board {
      */
     private void popularBoard() {
         Random numericalGenerator = new Random();
+        int count = 0;
+        int row = 0;
         for (String[] strings : board) {
             Arrays.fill(strings, "     ");
 
         }
         for (String[] strings : board) {
-            int count = 0;
-            int row = 0;
             while (count < 4) {
                 int randomFilling = numericalGenerator.nextInt(9);
                 String randomValue = String.valueOf(numericalGenerator.nextInt(10));
 
-                boolean validHorizontal = Validator.horizontalValidator(strings, randomValue);
-                boolean validVertical = Validator.verticalValidator(board, randomFilling, randomValue);
-                boolean validBlock = Validator.blockValidator(standardBoard, randomFilling, row, randomValue);
+                boolean valid = Validator.isValid(board, strings, randomFilling, randomValue, row);
 
-                if (strings[randomFilling].isBlank() && validHorizontal && validVertical) {
+                if (strings[randomFilling].isBlank() && valid) {
                     strings[randomFilling] = "  " + randomValue + "  ";
                     count++;
                 }

@@ -2,6 +2,13 @@ package teste;
 
 public class ValidatorTeste {
 
+    public static boolean isValid(String[][] board, String[] line, int randomFilling, String randomValue, int row) {
+        boolean horizontalVertical = horizontalValidator(line, randomValue) && verticalValidator(board, randomFilling, randomValue);
+        boolean valid = horizontalVertical && blockValidator(board, randomFilling, row, randomValue);
+
+        return valid;
+    }
+
     /**
      * Verifica se o valor aleatório não está presente na linha fornecida.
      *
@@ -51,13 +58,13 @@ public class ValidatorTeste {
      *
      * @param board         O tabuleiro completo.
      * @param randomFilling O índice da coluna onde o valor será inserido.
-     * @param row           O índice da linha onde o valor será inserido.
+     * @param rowIndex           O índice da linha onde o valor será inserido.
      * @param randomValue   O valor aleatório a ser validado.
      * @return {@code true} se o valor não estiver presente no bloco 3x3, {@code false} caso contrário.
      */
-    public static boolean blockValidator(String[][] board, int randomFilling, int row, String randomValue) {
+    public static boolean blockValidator(String[][] board, int randomFilling, int rowIndex, String randomValue) {
         // Calcula o início do bloco 3x3
-        int startRow = (row / 3) * 3;
+        int startRow = (rowIndex / 3) * 3;
         int startCol = (randomFilling / 3) * 3;
 
         // Verifica o bloco 3x3 correspondente
@@ -71,4 +78,6 @@ public class ValidatorTeste {
 
         return true;
     }
+
+
 }

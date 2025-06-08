@@ -26,18 +26,16 @@ public class BoardTest {
             Arrays.fill(strings, "     ");
 
         }
+        int row = 0;
         for (String[] strings : board) {
             int count = 0;
-            int row = 0;
             while (count < 4) {
                 int randomFilling = numericalGenerator.nextInt(9);
                 String randomValue = String.valueOf(numericalGenerator.nextInt(10));
 
-                boolean validHorizontal = ValidatorTeste.horizontalValidator(strings, randomValue);
-                boolean validVertical = ValidatorTeste.verticalValidator(board, randomFilling, randomValue);
-                boolean validBlock = ValidatorTeste.blockValidator(board, randomFilling, row, randomValue);
+                boolean valid = ValidatorTeste.isValid(board, strings, randomFilling, randomValue, row);
 
-                if (strings[randomFilling].isBlank() && validHorizontal && validVertical) {
+                if (strings[randomFilling].isBlank() && valid) {
                     strings[randomFilling] = "  " + randomValue + "  ";
                     count++;
                 }
