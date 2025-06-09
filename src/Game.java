@@ -1,15 +1,13 @@
 import tabuleiro.Board;
+import tabuleiro.Validator;
 import teste.BoardTest;
 
-public class Game {
-    public static void main(String[] args) {
-        Board tab = new Board();
-        tab.startingGame();
-        tab.printBoard();
+import java.util.Scanner;
 
-        /*BoardTest boardTest = new BoardTest();
-        boardTest.startingGame();
-        boardTest.printBoard();*/
+public class Game {
+
+    public static void playGame() {
+        Board board = new Board();
 
     }
 }
