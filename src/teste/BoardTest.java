@@ -1,4 +1,7 @@
 package teste;
+
+import tabuleiro.Validator;
+
 import java.util.Arrays;
 import java.util.Random;
 
@@ -7,8 +10,8 @@ public class BoardTest {
     private String[][] board;
 
     /**
-     * Inicializa o jogo atribuindo o tabuleiro padrão à variável de jogo
-     * e preenche o tabuleiro com valores aleatórios.
+     * Inicia o jogo configurando o tabuleiro com o layout padrão
+     * e preenchendo-o com valores aleatórios válidos.
      */
     public void startingGame(){
         board = standardBoard;
@@ -16,39 +19,48 @@ public class BoardTest {
     }
 
     /**
-     * Popula o tabuleiro preenchendo cada linha com 4 valores numéricos distintos.
-     * Garante que os valores não se repitam na mesma linha (horizontal) nem na mesma coluna (vertical),
-     * utilizando validadores externos.
+     * Preenche o tabuleiro com 4 números aleatórios distintos em cada linha,
+     * garantindo que:
+     * - Não haja repetição de valores na mesma linha (validação horizontal),
+     * - Não haja repetição de valores na mesma coluna (validação vertical),
+     * - Não haja repetição no bloco 3x3 correspondente (validação de bloco).
+     *
+     * Cada valor é inserido em uma posição aleatória e formatado com espaços
+     * para alinhamento visual durante a impressão.
+     *
+     * O processo é repetido linha por linha, utilizando o validador externo
+     * (Validator) para garantir as restrições do jogo.
      */
     private void popularBoard() {
         Random numericalGenerator = new Random();
-        for (String[] strings : board) {
-            Arrays.fill(strings, "     ");
 
+        // Preenche todo o tabuleiro com espaços em branco inicialmente
+        for (String[] rows : board) {
+            Arrays.fill(rows, "     ");
         }
-        int row = 0;
-        for (String[] strings : board) {
+
+        // Para cada linha, preenche até 4 posições válidas
+        for (int rowIndex = 0; rowIndex < 9; rowIndex++) {
             int count = 0;
             while (count < 4) {
                 int randomFilling = numericalGenerator.nextInt(9);
                 String randomValue = String.valueOf(numericalGenerator.nextInt(10));
 
-                boolean valid = ValidatorTeste.isValid(board, strings, randomFilling, randomValue, row);
+                boolean valid = ValidatorTeste.isValid(board, randomFilling, randomValue, rowIndex);
 
-                if (strings[randomFilling].isBlank() && valid) {
-                    strings[randomFilling] = "  " + randomValue + "  ";
+                if (board[rowIndex][randomFilling].isBlank() && valid) {
+                    board[rowIndex][randomFilling] = "  " + randomValue + "  ";
                     count++;
                 }
 
             }
-            row++;
         }
 
     }
 
     /**
-     * Imprime o tabuleiro no console, com divisões visuais entre os blocos 3x3
-     * para facilitar a leitura da estrutura do jogo.
+     * Exibe o tabuleiro no console com divisores visuais para destacar
+     * os blocos 3x3, facilitando a visualização semelhante a um Sudoku.
      */
     public void printBoard() {
         for (int l = 0; l < 9; l++) {

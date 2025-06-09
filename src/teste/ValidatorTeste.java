@@ -2,70 +2,74 @@ package teste;
 
 public class ValidatorTeste {
 
-    public static boolean isValid(String[][] board, String[] line, int randomFilling, String randomValue, int row) {
-        boolean horizontalVertical = horizontalValidator(line, randomValue) && verticalValidator(board, randomFilling, randomValue);
-        boolean valid = horizontalVertical && blockValidator(board, randomFilling, row, randomValue);
+    /**
+     * Verifica se um valor pode ser inserido em determinada posição do tabuleiro.
+     * A validação é feita em três níveis: linha (horizontal), coluna (vertical)
+     * e bloco 3x3, garantindo que o valor não esteja presente em nenhuma dessas regiões.
+     *
+     * @param board        O tabuleiro atual.
+     * @param row         A linha onde o valor será inserido.
+     * @param indexColumn  Índice da coluna onde o valor será inserido.
+     * @param randomValue  O valor a ser inserido (como String).
+     * @param indexRow     Índice da linha onde o valor será inserido.
+     * @return {@code true} se o valor for válido em todas as direções; {@code false} caso contrário.
+     */
+    public static boolean isValid(String[][] board, int indexColumn, String randomValue, int indexRow) {
+        boolean horizontalVertical = horizontalValidator(board, indexRow, randomValue) && verticalValidator(board, indexColumn, randomValue);
 
-        return valid;
+        return horizontalVertical && blockValidator(board, indexColumn, indexRow, randomValue);
     }
 
     /**
-     * Verifica se o valor aleatório não está presente na linha fornecida.
-     *
-     * @param line         A linha do tabuleiro a ser verificada.
-     * @param randomValue  O valor aleatório a ser validado.
-     * @return {@code true} se o valor não estiver presente na linha, {@code false} caso contrário.
+     * Valida se o valor não está presente na linha atual.
+     * @param board        Tabuleiro
+     * @param indexRow     Indice da linha atual do tabuleiro.
+     * @param randomValue  Valor a ser verificado.
+     * @return {@code true} se o valor não estiver presente; {@code false} caso contrário.
      */
-    public static boolean horizontalValidator(String[] line, String randomValue) {
-        boolean horizontalValidation = true;
-
-        for (String string : line) {
+    private static boolean horizontalValidator(String[][] board, int indexRow, String randomValue) {
+        for (String string : board[indexRow]) {
             if (string.contains(randomValue)) {
-                horizontalValidation = false;
-                break;
+                return false;
             }
         }
 
-        return horizontalValidation;
+        return true;
     }
 
 
     /**
-     * Verifica se o valor aleatório não está presente na coluna correspondente no tabuleiro.
+     * Valida se o valor não está presente na coluna atual.
      *
-     * @param board         O tabuleiro completo.
-     * @param randomFilling O índice da coluna a ser verificada.
-     * @param randomValue   O valor aleatório a ser validado.
-     * @return {@code true} se o valor não estiver presente na coluna, {@code false} caso contrário.
+     * @param board        Tabuleiro completo.
+     * @param indexColumn  Índice da coluna a ser verificada.
+     * @param randomValue  Valor a ser verificado.
+     * @return {@code true} se o valor não estiver presente; {@code false} caso contrário.
      */
-    public static boolean verticalValidator(String[][] board, int randomFilling, String randomValue) {
-        boolean verticalValidation = true;
-
+    private static boolean verticalValidator(String[][] board, int indexColumn, String randomValue) {
         for (String[] strings : board) {
-            if (strings[randomFilling].contains(randomValue)) {
-                verticalValidation = false;
-                break;
+            if (strings[indexColumn].contains(randomValue)) {
+                return false;
             }
         }
 
-        return verticalValidation;
+        return true;
     }
 
 
     /**
-     * Verifica se o valor aleatório não está presente no bloco 3x3 correspondente
-     * à posição especificada (linha e coluna).
+     * Valida se o valor não está presente no bloco 3x3 correspondente à posição.
      *
-     * @param board         O tabuleiro completo.
-     * @param randomFilling O índice da coluna onde o valor será inserido.
-     * @param rowIndex           O índice da linha onde o valor será inserido.
-     * @param randomValue   O valor aleatório a ser validado.
-     * @return {@code true} se o valor não estiver presente no bloco 3x3, {@code false} caso contrário.
+     * @param board        Tabuleiro completo.
+     * @param indexColumn  Índice da coluna da célula-alvo.
+     * @param indexRow     Índice da linha da célula-alvo.
+     * @param randomValue  Valor a ser verificado.
+     * @return {@code true} se o valor não estiver presente no bloco 3x3; {@code false} caso contrário.
      */
-    public static boolean blockValidator(String[][] board, int randomFilling, int rowIndex, String randomValue) {
+    private static boolean blockValidator(String[][] board, int indexColumn, int indexRow, String randomValue) {
         // Calcula o início do bloco 3x3
-        int startRow = (rowIndex / 3) * 3;
-        int startCol = (randomFilling / 3) * 3;
+        int startRow = (indexRow / 3) * 3;
+        int startCol = (indexColumn / 3) * 3;
 
         // Verifica o bloco 3x3 correspondente
         for (int i = startRow; i < startRow + 3; i++) {
@@ -78,6 +82,4 @@ public class ValidatorTeste {
 
         return true;
     }
-
-
 }
