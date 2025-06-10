@@ -1,7 +1,5 @@
 package tabuleiro;
 
-import teste.ValidatorTeste;
-
 import java.util.Arrays;
 import java.util.Random;
 
@@ -64,7 +62,7 @@ public class Board {
                 int randomFilling = numericalGenerator.nextInt(9);
                 String randomValue = String.valueOf(numericalGenerator.nextInt(10));
 
-                boolean valid = ValidatorTeste.isValid(board, randomFilling, randomValue, rowIndex);
+                boolean valid = Validator.isValid(board, randomFilling, randomValue, rowIndex);
 
                 if (board[rowIndex][randomFilling].isBlank() && valid) {
                     board[rowIndex][randomFilling] = "  " + randomValue + "  ";
@@ -89,8 +87,11 @@ public class Board {
         if (validateNumber(row, col, value)) {
             board[row][col] = "  " + value + "  ";
             return true;
+        } else {
+            System.out.println("Número inválido ou posição já preenchida. Tente novamente!");
+    
+            return false;
         }
-        return false;
     }
 
     /**
@@ -103,7 +104,7 @@ public class Board {
      * @return {@code true} se o valor for válido na posição; {@code false} caso contrário.
      */
     private boolean validateNumber(int row, int col, String value) {
-        return ValidatorTeste.isValid(board, col, value, row);
+        return Validator.isValid(board, col, value, row);
     }
 
     /**

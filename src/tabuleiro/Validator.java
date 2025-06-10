@@ -18,9 +18,13 @@ public class Validator {
      * @return {@code true} se o valor for válido em todas as validações; {@code false} caso contrário.
      */
     public static boolean isValid(String[][] board, int indexColumn, String randomValue, int indexRow) {
-        boolean horizontalVertical = horizontalValidator(board, indexRow, randomValue) && verticalValidator(board, indexColumn, randomValue);
+        boolean horizontal = horizontalValidator(board, indexRow, randomValue);
 
-        return horizontalVertical && blockValidator(board, indexColumn, indexRow, randomValue);
+        boolean Vertical = verticalValidator(board, indexColumn, randomValue);
+
+        boolean block = blockValidator(board, indexColumn, indexRow, randomValue);
+        
+        return 
     }
 
     /**
