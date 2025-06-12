@@ -8,8 +8,8 @@ public class Board {
     private String[][] defaultBoard;
 
     /**
-     * Inicia o jogo configurando o tabuleiro com o layout padrão
-     * e preenchendo-o com valores aleatórios válidos.
+     * Inicia o jogo preenchendo o tabuleiro com valores válidos aleatórios
+     * e salva uma cópia do estado inicial para reinicialização futura.
      */
     public void startingGame(){
         popularBoard();
@@ -20,9 +20,8 @@ public class Board {
     }
 
     /**
-     * Preenche todo o tabuleiro com espaços em branco,
-     * reiniciando o estado para uma matriz vazia (sem números).
-     * Usado antes de iniciar ou reiniciar o preenchimento.
+     * Limpa o tabuleiro preenchendo todas as posições com espaços em branco.
+     * Deve ser chamada antes de qualquer nova configuração.
      */
     public void zerarTabuleiro() {
         for (String[] rows : board) {
@@ -40,15 +39,16 @@ public class Board {
     }
 
     /**
-     * Preenche o tabuleiro com 4 números aleatórios distintos em cada linha,
-     * garantindo que:
-     * - Não haja repetição de valores na mesma linha (validação horizontal),
-     * - Não haja repetição de valores na mesma coluna (validação vertical),
-     * - Não haja repetição no bloco 3x3 correspondente (validação de bloco).
-     * Cada valor é inserido numa posição aleatória e formatado com espaços
-     * para alinhamento visual durante a impressão.
-     * O processo é repetido linha por linha, utilizando o validador externo
-     * (Validator) para garantir as restrições do jogo.
+     * Preenche o tabuleiro com 4 números aleatórios distintos em cada linha.
+     * Garante que:
+     * <ul>
+     *   <li>Não haja repetição na linha (horizontal)</li>
+     *   <li>Não haja repetição na coluna (vertical)</li>
+     *   <li>Não haja repetição no bloco 3x3 correspondente</li>
+     * </ul>
+     * Os números são validados com a classe {@link Validator}.
+     * @return void - Este método não retorna nenhum valor.
+     * Método privado, utilizado apenas internamente em {@link #startingGame()}.
      */
     private void popularBoard() {
         Random numericalGenerator = new Random();
@@ -62,9 +62,9 @@ public class Board {
                 int randomFilling = numericalGenerator.nextInt(9);
                 String randomValue = String.valueOf(numericalGenerator.nextInt(10));
 
-                boolean valid = Validator.isValid(board, randomFilling, randomValue, rowIndex);
+                Mensagem valid = Validator.isValid(board, randomFilling, randomValue, rowIndex);
 
-                if (board[rowIndex][randomFilling].isBlank() && valid) {
+                if (board[rowIndex][randomFilling].isBlank() && valid.isValor()) {
                     board[rowIndex][randomFilling] = "  " + randomValue + "  ";
                     count++;
                 }
@@ -76,41 +76,43 @@ public class Board {
 
     /**
      * Tenta adicionar um número no tabuleiro na posição especificada,
-     * desde que seja válido segundo as regras do jogo.
+     * desde que ele passe pelas validações de linha, coluna e bloco.
      *
-     * @param row   Índice da linha onde o número será inserido.
-     * @param col   Índice da coluna onde o número será inserido.
-     * @param value Valor numérico (como 'string') a ser inserido.
-     * @return {@code true} se o número foi inserido com sucesso; {@code false} caso contrário.
+     * @param row   {@code int} - Índice da linha onde o número será inserido (0 a 8).
+     * @param col   {@code int} - Índice da coluna onde o número será inserido (0 a 8).
+     * @param value {@code String} - Valor numérico (em string) que será inserido.
+     * @return void - Este método não retorna valor, mas imprime mensagens de erro se a validação falhar.
      */
-    public boolean addNumber(int row, int col, String value) {
-        if (validateNumber(row, col, value)) {
+    public void addNumber(int row, int col, String value) {
+        Mensagem validNumber = validateNumber(row, col, value);
+        if (validNumber.isValor()) {
             board[row][col] = "  " + value + "  ";
-            return true;
+            System.out.println(validNumber.getDescricao());
         } else {
-            System.out.println("Número inválido ou posição já preenchida. Tente novamente!");
-    
-            return false;
+            System.out.println(validNumber.getDescricao());
+
         }
     }
 
     /**
-     * Valida se um número pode ser inserido na posição informada do tabuleiro,
-     * verificando as regras de linha, coluna e bloco 3x3.
-     *
-     * @param row   Índice da linha da célula a ser validada.
-     * @param col   Índice da coluna da célula a ser validada.
-     * @param value Valor numérico (como 'string') a ser testado.
-     * @return {@code true} se o valor for válido na posição; {@code false} caso contrário.
+     * Valida se um número pode ser inserido em determinada posição do tabuleiro.
+     * Assegura que o valor não viole regras de linha, coluna ou bloco.
+     * @param row   {@code int} - Índice da linha a ser validada.
+     * @param col   {@code int} - Índice da coluna a ser validada.
+     * @param value {@code String} - Valor numérico a ser testado.
+     * @return {@code Mensagem} - Enum indicando se a inserção é válida ou qual regra foi violada.
+     * Método privado utilizado por {@link #addNumber(int, int, String)}.
      */
-    private boolean validateNumber(int row, int col, String value) {
+    private Mensagem validateNumber(int row, int col, String value) {
         return Validator.isValid(board, col, value, row);
     }
 
     /**
-     * Exibe o tabuleiro no console com divisores visuais para destacar
-     * os blocos 3x3, facilitando a visualização.
+     * Exibe o tabuleiro no console, formatado com divisores para facilitar
+     * a visualização dos blocos 3x3 do estilo Sudoku.
+     * @return void - Este método apenas imprime no console e não retorna valor.
      */
+
     public void printBoard() {
         for (int l = 0; l < 9; l++) {
 

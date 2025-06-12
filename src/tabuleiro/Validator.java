@@ -1,5 +1,8 @@
 package tabuleiro;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Validator {
 
     /**
@@ -15,25 +18,31 @@ public class Validator {
      * @param indexColumn  Índice da coluna onde o valor será inserido.
      * @param randomValue  Valor numérico (como "String") a ser inserido.
      * @param indexRow     Índice da linha onde o valor será inserido.
-     * @return {@code true} se o valor for válido em todas as validações; {@code false} caso contrário.
+     * @return {@code Mensagem} - Enum informando se a inserção foi válida ou indicando qual validação falhou.
      */
-    public static boolean isValid(String[][] board, int indexColumn, String randomValue, int indexRow) {
-        boolean horizontal = horizontalValidator(board, indexRow, randomValue);
+    public static Mensagem isValid(String[][] board, int indexColumn, String randomValue, int indexRow) {
 
-        boolean Vertical = verticalValidator(board, indexColumn, randomValue);
-
-        boolean block = blockValidator(board, indexColumn, indexRow, randomValue);
+        if (!horizontalValidator(board, indexRow, randomValue)) {
+            return Mensagem.HorizontalFalse;
+        } if (!verticalValidator(board, indexColumn, randomValue)) {
+            return Mensagem.VerticalFalse;
+        } if (!blockValidator(board, indexColumn, indexRow, randomValue)) {
+            return Mensagem.BlocoFalse;
+        } else {
+            return Mensagem.ValidationTrue;
+        }
         
-        return 
+
     }
 
     /**
-     * Verifica se o valor já está presente na linha especificada do tabuleiro.
+     * Verifica se o valor está repetido na linha indicada do tabuleiro.
      *
-     * @param board        O tabuleiro completo.
-     * @param indexRow     O índice da linha a ser verificada.
-     * @param randomValue  O valor a ser validado.
-     * @return {@code true} se o valor não estiver presente na linha; {@code false} caso contrário.
+     * @param board       {@code String[][]} - Tabuleiro do jogo.
+     * @param indexRow    {@code int} - Índice da linha a ser validada.
+     * @param randomValue {@code String} - Valor a ser inserido.
+     * @return {@code boolean} - {@code true} se o valor não existir na linha; {@code false} caso contrário.
+     * Método auxiliar usado por: {@link #isValid(String[][], int, String, int)}
      */
     private static boolean horizontalValidator(String[][] board, int indexRow, String randomValue) {
         for (String item : board[indexRow]) {
@@ -47,14 +56,14 @@ public class Validator {
 
 
     /**
-     * Verifica se o valor já está presente na coluna especificada do tabuleiro.
+     * Verifica se o valor está repetido na coluna indicada do tabuleiro.
      *
-     * @param board        O tabuleiro completo.
-     * @param indexColumn  O índice da coluna a ser verificada.
-     * @param randomValue  O valor a ser validado.
-     * @return {@code true} se o valor não estiver presente na coluna; {@code false} caso contrário.
+     * @param board       {@code String[][]} - Tabuleiro do jogo.
+     * @param indexColumn {@code int} - Índice da coluna a ser validada.
+     * @param randomValue {@code String} - Valor a ser inserido.
+     * @return {@code boolean} - {@code true} se o valor não existir na coluna; {@code false} caso contrário.
+     * Método auxiliar usado por: {@link #isValid(String[][], int, String, int)}
      */
-
     private static boolean verticalValidator(String[][] board, int indexColumn, String randomValue) {
         for (String[] rows : board) {
             if (rows[indexColumn].contains(randomValue)) {
@@ -75,8 +84,8 @@ public class Validator {
      * @param indexRow     O índice da linha da célula onde o valor será inserido.
      * @param randomValue  O valor a ser validado.
      * @return {@code true} se o valor não estiver presente no bloco 3x3; {@code false} caso contrário.
+     * Método auxiliar usado por: {@link #isValid(String[][], int, String, int)}
      */
-
     private static boolean blockValidator(String[][] board, int indexColumn, int indexRow, String randomValue) {
         // Calcula o início do bloco 3x3
         int startRow = (indexRow / 3) * 3;
@@ -92,5 +101,41 @@ public class Validator {
         }
 
         return true;
+    }
+
+    public boolean isValidEndGame(String[][] board){
+        return (horizontalValidatorFinal(board) && verticalValidatorFinal(board)) && blockValidatorFinal(board);
+    }
+
+    private boolean horizontalValidatorFinal(String[][] board) {
+
+        for (String[] rows : board){
+            Set<String> set = new HashSet<>();
+            for (String valor : rows) {
+                if (!set.add(valor)) {
+                    return false;
+                }
+            }
+
+        }
+        return true; // se não tiver valor duplicado na linha
+    }
+
+
+    private boolean verticalValidatorFinal(String[][] board) {
+        for (int column = 0; column < 9; column++) {
+            Set<String> set = new HashSet<>();
+            for (int row = 0; row < 9; row++) {
+                String value = board[row][column];
+                if (!value.isEmpty() && !set.add(value)) {
+                    return false; // Duplicata na coluna `coluna`
+                }
+            }
+        }
+        return true; // Nenhuma duplicata em nenhuma coluna
+    }
+    private boolean blockValidatorFinal(String[][] board) {
+        //to do validação final
+
     }
 }
