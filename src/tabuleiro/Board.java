@@ -71,7 +71,6 @@ public class Board {
 
             }
         }
-
     }
 
     /**
@@ -128,5 +127,32 @@ public class Board {
             }
         }
         System.out.println("\n\n");
+    }
+
+
+
+
+
+    public void popularBoardTeste() {
+        zerarTabuleiro();
+        Random numericalGenerator = new Random();
+        int row = 0;
+        while (row < 9) {
+            int col = 0;
+            while (col < 9) {
+                String randomValue = String.valueOf(numericalGenerator.nextInt(10));
+
+                Mensagem valid = Validator.isValid(board, col, randomValue, row);
+                if (board[row][col].isBlank() && valid.isValor()) {
+                    board[row][col] = "  " + randomValue + "  ";
+                    col++;
+                    printBoard();
+                }
+            }
+            row++;
+        }
+    }
+    public boolean testeFim() {
+        return Validator.isValidEndGame(board);
     }
 }

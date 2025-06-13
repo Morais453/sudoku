@@ -103,11 +103,24 @@ public class Validator {
         return true;
     }
 
-    public boolean isValidEndGame(String[][] board){
+    /**
+     * Verifica se o jogo foi finalizado corretamente, ou seja,
+     * se toda a regra de preenchimento está a ser seguida.
+     * Combina validações horizontais, verticais e de blocos.
+     * @param board {@code String[][]} - Tabuleiro completo preenchido.
+     * @return {@code boolean} - Retorna {@code true} se o tabuleiro estiver correto; caso contrário, {@code false}.
+     */
+    public static boolean isValidEndGame(String[][] board){
         return (horizontalValidatorFinal(board) && verticalValidatorFinal(board)) && blockValidatorFinal(board);
     }
 
-    private boolean horizontalValidatorFinal(String[][] board) {
+    /**
+     * Verifica se há duplicatas em alguma linha do tabuleiro.
+     * @param board {@code String[][]} - Tabuleiro completo preenchido.
+     * @return {@code boolean} - Retorna {@code true} se todas as linhas tiverem apenas valores únicos; caso contrário, {@code false}.
+     * Método auxiliar usado por {@link #isValidEndGame(String[][])}.
+     */
+    private static boolean horizontalValidatorFinal(String[][] board) {
 
         for (String[] rows : board){
             Set<String> set = new HashSet<>();
@@ -121,8 +134,13 @@ public class Validator {
         return true; // se não tiver valor duplicado na linha
     }
 
-
-    private boolean verticalValidatorFinal(String[][] board) {
+    /**
+     * Verifica se há duplicatas em alguma coluna do tabuleiro.
+     * @param board {@code String[][]} - Tabuleiro completo preenchido.
+     * @return {@code boolean} - Retorna {@code true} se todas as colunas tiverem apenas valores únicos; caso contrário, {@code false}.
+     * Método auxiliar usado por {@link #isValidEndGame(String[][])}.
+     */
+    private static boolean verticalValidatorFinal(String[][] board) {
         for (int column = 0; column < 9; column++) {
             Set<String> set = new HashSet<>();
             for (int row = 0; row < 9; row++) {
@@ -134,8 +152,28 @@ public class Validator {
         }
         return true; // Nenhuma duplicata em nenhuma coluna
     }
-    private boolean blockValidatorFinal(String[][] board) {
-        //to do validação final
 
+    /**
+     * Verifica se há duplicatas em algum dos blocos 3x3 do tabuleiro.
+     * @param board {@code String[][]} - Tabuleiro completo preenchido.
+     * @return {@code boolean} - Retorna {@code true} se todos os blocos 3x3 tiverem apenas valores únicos; caso contrário, {@code false}.
+     * Método auxiliar usado por {@link #isValidEndGame(String[][])}.
+     */
+    private static boolean blockValidatorFinal(String[][] board) {
+        for (int startRow = 0; startRow < 9; startRow += 3) {
+            for (int startCol = 0; startCol < 9; startCol += 3) {
+                Set<String> set = new HashSet<>();
+                // Verifica o bloco 3x3 correspondente
+                for (int i = startRow; i < startRow + 3; i++) {
+                    for (int j = startCol; j < startCol + 3; j++) {
+                        String value = board[i][j];
+                        if (!value.isEmpty() && !set.add(value)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 }
