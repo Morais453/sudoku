@@ -16,7 +16,6 @@ public class Board {
         defaultBoard = Arrays.stream(board)
                 .map(String[]::clone)
                 .toArray(String[][]::new);
-        ;
     }
 
     /**
@@ -25,7 +24,7 @@ public class Board {
      */
     public void zerarTabuleiro() {
         for (String[] rows : board) {
-            Arrays.fill(rows, "     ");
+            Arrays.fill(rows, "     "); // Espaço visual reservado para cada célula
         }
     }
 
@@ -35,11 +34,13 @@ public class Board {
      * Isso permite ao jogador recomeçar a partir do layout inicial gerado.
      */
     public void reiniciarTabuleiro() {
-        board = defaultBoard;
+        board = Arrays.stream(defaultBoard)
+                .map(String[]::clone)
+                .toArray(String[][]::new);
     }
 
     /**
-     * Preenche o tabuleiro com 4 números aleatórios distintos em cada linha.
+     * Preenche o tabuleiro com 4 números aleatórios distintos de 1 a 9 em cada linha.
      * Garante que:
      * <ul>
      *   <li>Não haja repetição na linha (horizontal)</li>
@@ -60,7 +61,7 @@ public class Board {
             int count = 0;
             while (count < 4) {
                 int randomFilling = numericalGenerator.nextInt(9);
-                String randomValue = String.valueOf(numericalGenerator.nextInt(10));
+                String randomValue = String.valueOf(numericalGenerator.nextInt(9) + 1);
 
                 Mensagem valid = Validator.isValid(board, randomFilling, randomValue, rowIndex);
 
@@ -83,15 +84,20 @@ public class Board {
      * @return void - Este método não retorna valor, mas imprime mensagens de erro se a validação falhar.
      */
     public void addNumber(int row, int col, String value) {
+        // Validação de intervalo
+        if (!value.matches("[1-9]")) { // Só permite valores de 1 a 9
+            throw new ErroNum("Valor inválido! Só são permitidos números de 1 a 9.");
+        }
+
         Mensagem validNumber = validateNumber(row, col, value);
         if (validNumber.isValor()) {
             board[row][col] = "  " + value + "  ";
             System.out.println(validNumber.getDescricao());
         } else {
             System.out.println(validNumber.getDescricao());
-
         }
     }
+
 
     /**
      * Valida se um número pode ser inserido em determinada posição do tabuleiro.
@@ -116,24 +122,58 @@ public class Board {
         for (int l = 0; l < 9; l++) {
 
             for (int c = 0; c < 9; c++) {
-                System.out.print(board[l][c]+"|");
+                if (c != 2 && c != 5 && c != 8){
+                    System.out.print(board[l][c]+"|");
+                } else if (c == 2 || c == 5) {
+                    System.out.print(board[l][c]+" || ");
+                } else {
+                    System.out.print(board[l][c]);
+                }
 
                 if (c == 8 && (l != 2 && l != 5 && l != 8)){
-                    System.out.println("\n------------------------------------------------------");
+                    System.out.println("\n------------------------------------------------------------");
+                } else if (c == 8 && l != 8){
+                    System.out.println("\n============================================================");
                 }
-            }
-            switch (l) {
-                case 2, 5 -> System.out.println("\n======================================================");
             }
         }
         System.out.println("\n\n");
     }
 
+    /**
+     * Mostra dicas e instruções para o jogador.
+     */
+    public void help(){
+        System.out.println("""
+                ==================== AJUDA ====================
+                O objetivo é preencher o tabuleiro com números de 1 a 9,
+                sem repetir na mesma linha, coluna ou bloco 3x3.
+
+                Comandos disponíveis:
+                - Digite 1 para continuar jogando
+                - Digite 2 para reiniciar o jogo
+                - Digite 3 para relembrar as instruções
+                - Digite 4 para sair do jogo
+
+                Para jogar, informe:
+                -> Linha (0 a 8)
+                -> Coluna (0 a 8)
+                -> Valor (1 a 9)
+                ===============================================
+                """);
+    }
+
+    /**
+     * Verifica se o tabuleiro está completamente correto,
+     * ou seja, se o jogo foi finalizado com sucesso.
+     */
+    public boolean isValidEndGame() {
+        return Validator.isValidEndGame(board);
+    }
 
 
 
-
-    public void popularBoardTeste() {
+/*    public void popularBoardTeste() {
         zerarTabuleiro();
         Random numericalGenerator = new Random();
         int row = 0;
@@ -154,5 +194,5 @@ public class Board {
     }
     public boolean testeFim() {
         return Validator.isValidEndGame(board);
-    }
+    }*/
 }
